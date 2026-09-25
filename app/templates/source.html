@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-4">
+    <h2 class="text-xl font-semibold">{{ source.name }}</h2>
+    <form method="get" class="flex gap-2">
+        <input type="text" name="q" value="{{ query }}" placeholder="Search..."
+               class="rounded bg-gray-800 border border-white/10 px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        <button type="submit" class="rounded bg-indigo-600 hover:bg-indigo-500 px-3 py-1.5 text-sm">Search</button>
+    </form>
+</div>
+
+<div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+    {% for wallpaper in result.items %}
+    <a href="{{ wallpaper.source_page_url }}" target="_blank" rel="noopener"
+       class="block rounded-lg overflow-hidden bg-gray-800 border border-white/10 hover:opacity-90 transition">
+        <img src="{{ wallpaper.thumbnail_url }}" alt="{{ wallpaper.title }}" class="w-full h-40 object-cover" loading="lazy">
+        <span class="block text-xs text-gray-400 p-2 truncate">{{ wallpaper.title }}</span>
+    </a>
+    {% else %}
+    <p class="text-gray-400">No results.</p>
+    {% endfor %}
+</div>
+
+<div class="flex justify-between mt-6 text-sm">
+    {% if page > 1 %}
+    <a class="text-indigo-400 hover:underline"
+       href="{{ url_for('source_detail', source_id=source.id, page=page-1, q=query) }}">&larr; Previous</a>
+    {% else %}<span></span>{% endif %}
+    {% if result.has_next_page %}
+    <a class="text-indigo-400 hover:underline"
+       href="{{ url_for('source_detail', source_id=source.id, page=page+1, q=query) }}">Next &rarr;</a>
+    {% endif %}
+</div>
+{% endblock %}
